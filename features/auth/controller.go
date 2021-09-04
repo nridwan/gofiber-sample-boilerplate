@@ -1,11 +1,10 @@
 package auth
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/nridwan/core/data/response"
+	"github.com/nridwan/core/middlewares/jwtuser"
 	"github.com/nridwan/models"
 	"github.com/nridwan/sys/dbutil"
 	"github.com/nridwan/sys/jwtutil"
@@ -38,18 +37,40 @@ func handlerLogin(ctx *fiber.Ctx) error {
 		}}))
 	}
 
-	t, err := jwtutil.GenerateUserToken(fmt.Sprintf("%d", data.ID), "asd")
+	t, err := jwtuser.GenerateToken(ctx.Context(), data.ID, 1)
 	if err != nil {
 		return ctx.JSON(response.CreateMetaResponse(500, "", []response.Error{}))
 	}
 
-	return ctx.JSON(response.CreateResponse(200, "success", map[string]interface{}{
-		"token": t,
-	}))
+	return ctx.JSON(response.CreateResponse(200, "success", t))
+}
+
+func handlerRefresh(ctx *fiber.Ctx) error {
+	err := jwtuser.Logout(ctx)
+	if err != nil {
+		return err
+	}
+	claims := ctx.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
+	t, err := jwtuser.GenerateToken(
+		ctx.Context(),
+		jwtutil.GetUint64Claim(claims["sub"]),
+		jwtutil.GetUint64Claim(claims["api"]))
+	if err != nil {
+		return ctx.JSON(response.CreateMetaResponse(500, "", []response.Error{}))
+	}
+
+	return ctx.JSON(response.CreateResponse(200, "success", t))
+}
+
+func handlerLogout(ctx *fiber.Ctx) error {
+	err := jwtuser.Logout(ctx)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(response.CreateResponse(200, "success", nil))
 }
 
 func handlerProfile(ctx *fiber.Ctx) error {
-	user := ctx.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	return ctx.JSON(response.CreateResponse(200, "success", claims))
+	user := ctx.Locals("userData")
+	return ctx.JSON(response.CreateResponse(200, "success", user))
 }

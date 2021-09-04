@@ -49,7 +49,7 @@ func AddConfig(profName string, config DbProfile) {
 		suffix += url.QueryEscape(config.Locale)
 	}
 	if config.Connection == "mysql" {
-		suffix += "&parseTime=true"
+		suffix += "&parseTime=true&multiStatements=true"
 	}
 	profiles[profName], _ = sql.Open(config.Connection, config.Username+":"+config.Password+"@tcp("+config.Host+":"+config.Port+")/"+config.Database+suffix)
 }

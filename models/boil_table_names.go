@@ -5,10 +5,12 @@ package models
 
 var TableNames = struct {
 	APIApps    string
+	AppTokens  string
 	UserTokens string
 	Users      string
 }{
 	APIApps:    "api_apps",
+	AppTokens:  "app_tokens",
 	UserTokens: "user_tokens",
 	Users:      "users",
 }

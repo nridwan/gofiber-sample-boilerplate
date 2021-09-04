@@ -1,11 +1,10 @@
 package jwtutil
 
 import (
-	"time"
+	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/nridwan/config/configutil"
 	"github.com/nridwan/core/data/response"
 	"gopkg.in/guregu/null.v3"
@@ -23,20 +22,12 @@ func errorHandler(ctx *fiber.Ctx, err error) error {
 	})
 }
 
-func successHandler(ctx *fiber.Ctx) error {
-	// claims := ctx.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
-	return ctx.Next()
-	// return fiber.NewError(401, "Token is expired")
-}
-
 func LoadConfiguration() {
 	secret = configutil.Getenv("JWT_SECRET", "")
-	asd := jwtware.New(jwtware.Config{
-		SigningKey:     []byte(secret),
-		ErrorHandler:   errorHandler,
-		SuccessHandler: successHandler,
+	handler = jwtware.New(jwtware.Config{
+		SigningKey:   []byte(secret),
+		ErrorHandler: errorHandler,
 	})
-	handler = asd
 }
 
 func GetSecret() string {
@@ -47,14 +38,24 @@ func GetHandler() fiber.Handler {
 	return handler
 }
 
-func GenerateUserToken(id string, apps string) (string, error) {
-	token := jwt.New(jwt.SigningMethodHS256)
+func GetInt64Claim(data interface{}) int64 {
+	switch exp := data.(type) {
+	case float64:
+		return int64(exp)
+	case json.Number:
+		v, _ := exp.Int64()
+		return v
+	}
+	return 0
+}
 
-	// Set claims
-	claims := token.Claims.(jwt.MapClaims)
-	claims["id"] = id
-	claims["apps"] = apps
-	claims["exp"] = time.Now().Add(time.Minute).Unix()
-	// Generate encoded token and send it as response.
-	return token.SignedString([]byte(secret))
+func GetUint64Claim(data interface{}) uint64 {
+	switch exp := data.(type) {
+	case float64:
+		return uint64(exp)
+	case json.Number:
+		v, _ := exp.Int64()
+		return uint64(v)
+	}
+	return 0
 }

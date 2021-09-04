@@ -41,6 +41,7 @@
  - there's only checking mechanism for this boilerplate, proceed by entering data manually to database before testing.
  - password used for `users` table is using `bcrypt`, use any online generator or just get some data from laravel projects if any
 ## Coming Soon / Todos (not sure when, don't ask)
-- JWT auth
+- App Login
+- Cleanup Junk JWT Token
 ## Disclaimer
 - All these tutorials are made for windows and powershell, but there's bash script just in case for those who's using *nix based machine.
