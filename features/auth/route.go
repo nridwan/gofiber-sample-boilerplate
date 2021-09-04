@@ -8,5 +8,5 @@ const prefix = "auth"
 
 //Register module routes
 func Register(app *fiber.App) {
-	app.Get(prefix+"/login", handlerLogin)
+	app.Post(prefix+"/login", handlerLogin)
 }
