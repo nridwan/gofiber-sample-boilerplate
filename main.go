@@ -6,6 +6,7 @@ import (
 	"github.com/nridwan/config"
 	"github.com/nridwan/config/configutil"
 	"github.com/nridwan/features"
+	"github.com/nridwan/sys/fiberutil"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -37,7 +38,9 @@ func main() {
 	host := configutil.Getenv("APP_HOST", "localhost:8000")
 	hs := HostSwitch{host}
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: fiberutil.AssertError,
+	})
 	app.Use(hs.CheckHost)
 	features.Register(app)
 
