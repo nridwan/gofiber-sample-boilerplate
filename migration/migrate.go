@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"log"
-	"os"
 
 	"github.com/nridwan/config"
 	"github.com/nridwan/sys/dbutil"
@@ -18,17 +17,14 @@ func main() {
 	count := flag.Int("count", 0, "Decide migration count")
 	path := flag.String("path", "migration", "Decide migration path")
 	force := flag.Int("force", 0, "Force migration")
+	taskUp := flag.Bool("up", false, "Apply the migration")
+	taskDown := flag.Bool("down", false, "Revert the migration")
 	flag.Parse()
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 	config.LoadAllConfiguration()
-	args := os.Args
-	task := "up"
-	if len(args) > 1 && (args[1] == "up" || args[1] == "down" || args[1] == "version") {
-		task = args[1]
-	}
 	driver, err := mysql.WithInstance(dbutil.Default(), &mysql.Config{})
 	m, err := migrate.NewWithDatabaseInstance(
 		"file://"+*path,
@@ -39,17 +35,17 @@ func main() {
 	}
 	if *force != 0 {
 		m.Force(*force)
-	} else if task == "up" {
-		if *count == 0 {
-			err = m.Up()
-		} else {
-			err = m.Steps(*count)
-		}
-	} else if task == "down" {
+	} else if *taskDown {
 		if *count == 0 {
 			err = m.Steps(-1)
 		} else {
 			err = m.Steps(-*count)
+		}
+	} else if *taskUp {
+		if *count == 0 {
+			err = m.Up()
+		} else {
+			err = m.Steps(*count)
 		}
 	} else {
 		version, _, err := m.Version()

@@ -14,25 +14,23 @@
  5. copy `sqlboiler.toml.example` to `sqlboiler.toml` 
  6. copy `.env.example` to `.env`
  7. edit database configuration in both `sqlboiler.toml` and `.env`
- 8. run migration by running `go run .\migration\migrate.go up`
+ 8. run migration by running `go run .\migration\migrate.go --up`
  9. install Fiber CLI for hot reload support 
     `go get -u github.com/gofiber/cli/fiber`
  10. run the server by `fiber dev`
  11. any changes to code will be automatically recompiled
 ## How Create Migrations
-1. add files in `migration` directory, one for up one for down, with format `{version_number}_{action}.{up/down}.sql`
-   *note: 1 version number can involve multi table, please don't follow the example as the example just for experimenting how the migration works
-   *version number should be in order (1, 2, 3). in [official library documentation](https://github.com/golang-migrate/migrate/blob/master/MIGRATIONS.md) there exist timestamp numbered, but I haven't tried it personally how the migration number work when checking current version.
+1. run the command `./make_migration.sh {name}` or `.\make_migration.ps1 {name}`, then `timestamp_{name}.up.sql` and `timestamp_{name}.down.sql` is created
 3. in up.sql insert any sql query to add/modify tables
 4. in down.sql insert any sql query that revert anything did in up.sql
 ## How to Use Migrate.go
-- Apply migration: `go run .\migration\migrate.go up`
+- Apply migration: `go run .\migration\migrate.go --up`
   this will apply all available migrations
-- Revert migration: `go run .\migration\migrate.go down --step={number}`
+- Revert migration: `go run .\migration\migrate.go --down --step={number}`
   replace {number} with how many version needed to revert
   if not specified, only revert 1 version
 - Force migration version: `go run .\migration\migrate.go --force={version_number}```
-- Check current version: `go run .\migration\migrate.go version`
+- Check current version: `go run .\migration\migrate.go`
 ## Build Production Binary
 - Build for current OS: `.\build.ps1` | `./build.sh`
 - Build for other OS: `.\build.ps1 {OS} {ARCH}` | `./build.sh {OS} {ARCH}`
@@ -43,7 +41,6 @@
  - there's only checking mechanism for this boilerplate, proceed by entering data manually to database before testing.
  - password used for `users` table is using `bcrypt`, use any online generator or just get some data from laravel projects if any
 ## Coming Soon / Todos (not sure when, don't ask)
-- Migration creator, literally have idea just similar with bash `touch` command, but still not sure how to do it in power shell, will make for both OS
 - JWT auth
 ## Disclaimer
 - All these tutorials are made for windows and powershell, but there's bash script just in case for those who's using *nix based machine.
