@@ -1,0 +1,6 @@
+/vendor
+.env
+/release
+debug_app.exe
+debug_app
+sqlboiler.toml
