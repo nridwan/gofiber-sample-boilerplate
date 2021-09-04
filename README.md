@@ -29,7 +29,7 @@
 - Revert migration: `go run .\migration\migrate.go --down --step={number}`
   replace {number} with how many version needed to revert
   if not specified, only revert 1 version
-- Force migration version: `go run .\migration\migrate.go --force={version_number}```
+- Force migration version: `go run .\migration\migrate.go --force={version_number}`
 - Check current version: `go run .\migration\migrate.go`
 ## Build Production Binary
 - Build for current OS: `.\build.ps1` | `./build.sh`
