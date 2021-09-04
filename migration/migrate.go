@@ -25,7 +25,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 	config.LoadAllConfiguration()
-	driver, err := mysql.WithInstance(dbutil.Default(), &mysql.Config{})
+	driver, _ := mysql.WithInstance(dbutil.Default(), &mysql.Config{})
 	m, err := migrate.NewWithDatabaseInstance(
 		"file://"+*path,
 		"mysql", driver)
