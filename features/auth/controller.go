@@ -1,10 +1,14 @@
 package auth
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/nridwan/core/data/response"
 	"github.com/nridwan/models"
 	"github.com/nridwan/sys/dbutil"
+	"github.com/nridwan/sys/jwtutil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -34,5 +38,18 @@ func handlerLogin(ctx *fiber.Ctx) error {
 		}}))
 	}
 
-	return ctx.JSON(response.CreateResponse(200, "success", data))
+	t, err := jwtutil.GenerateUserToken(fmt.Sprintf("%d", data.ID), "asd")
+	if err != nil {
+		return ctx.JSON(response.CreateMetaResponse(500, "", []response.Error{}))
+	}
+
+	return ctx.JSON(response.CreateResponse(200, "success", map[string]interface{}{
+		"token": t,
+	}))
+}
+
+func handlerProfile(ctx *fiber.Ctx) error {
+	user := ctx.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	return ctx.JSON(response.CreateResponse(200, "success", claims))
 }
