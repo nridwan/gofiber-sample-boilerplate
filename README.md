@@ -33,6 +33,12 @@
   if not specified, only revert 1 version
 - Force migration version: `go run .\migration\migrate.go --force={version_number}```
 - Check current version: `go run .\migration\migrate.go version`
+## Build Production Binary
+- Build for current OS: `.\build.ps1` | `./build.sh`
+- Build for other OS: `.\build.ps1 {OS} {ARCH}` | `./build.sh {OS} {ARCH}`
+- replace {OS} and {ARCH} with valid value
+  [See OS and ARCH list here](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63)
+  example, windows creating linux x64 binary using `.\build.ps1 linux amd64`
 ## Notes
  - there's only checking mechanism for this boilerplate, proceed by entering data manually to database before testing.
  - password used for `users` table is using `bcrypt`, use any online generator or just get some data from laravel projects if any
