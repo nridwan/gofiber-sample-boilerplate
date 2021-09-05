@@ -68,8 +68,14 @@ func CanRefresh(c *fiber.Ctx) error {
 
 func Logout(ctx *fiber.Ctx) error {
 	claims := ctx.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
+	var uid uint64 = 0
+	if res, err := hashutil.DecodeSingle(claims["sub"].(string)); err != nil {
+		return err
+	} else {
+		uid = uint64(res)
+	}
 	data, err := models.UserTokens(
-		qm.Where("user_id=?", claims["sub"]),
+		qm.Where("user_id=?", uid),
 		qm.And("hash=?", claims["jti"])).OneG(ctx.Context())
 	if err != nil {
 		return err
@@ -80,8 +86,15 @@ func Logout(ctx *fiber.Ctx) error {
 
 func Refresh(ctx *fiber.Ctx) (*jwtmodel.TokenResponse, error) {
 	claims := ctx.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
+	var uid uint64 = 0
+	if res, err := hashutil.DecodeSingle(claims["sub"].(string)); err != nil {
+		return nil, err
+	} else {
+		uid = uint64(res)
+	}
 	data, err := models.UserTokens(
-		qm.Where("hash=?", claims["jti"])).OneG(ctx.Context())
+		qm.Where("user_id=?", uid),
+		qm.And("hash=?", claims["jti"])).OneG(ctx.Context())
 	if err != nil {
 		return nil, err
 	}
