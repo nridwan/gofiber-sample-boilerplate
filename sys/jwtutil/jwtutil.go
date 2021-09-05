@@ -2,6 +2,8 @@ package jwtutil
 
 import (
 	"encoding/json"
+	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
@@ -12,6 +14,10 @@ import (
 
 var secret = ""
 var handler fiber.Handler = nil
+
+//expired for token in minutes
+var Lifetime time.Duration = 1
+var RefreshLifetime time.Duration = 1
 
 func errorHandler(ctx *fiber.Ctx, err error) error {
 	return ctx.Status(401).JSON(response.Response{
@@ -28,6 +34,12 @@ func LoadConfiguration() {
 		SigningKey:   []byte(secret),
 		ErrorHandler: errorHandler,
 	})
+	if localLifetime, err := strconv.Atoi(configutil.Getenv("JWT_TOKEN_LIFETIME", "1")); err == nil {
+		Lifetime = time.Duration(localLifetime)
+	}
+	if localLifetime, err := strconv.Atoi(configutil.Getenv("JWT_REFRESH_LIFETIME", "1")); err == nil {
+		RefreshLifetime = time.Duration(localLifetime)
+	}
 }
 
 func GetSecret() string {

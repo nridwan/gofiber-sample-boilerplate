@@ -24,44 +24,51 @@ import (
 
 // UserToken is an object representing the database table.
 type UserToken struct {
-	ID     uint64      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	UserID null.Uint64 `boil:"user_id" json:"user_id,omitempty" toml:"user_id" yaml:"user_id,omitempty"`
-	Hash   string      `boil:"hash" json:"hash" toml:"hash" yaml:"hash"`
+	ID        uint64      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	UserID    null.Uint64 `boil:"user_id" json:"user_id,omitempty" toml:"user_id" yaml:"user_id,omitempty"`
+	Hash      string      `boil:"hash" json:"hash" toml:"hash" yaml:"hash"`
+	ExpiredAt null.Time   `boil:"expired_at" json:"expired_at,omitempty" toml:"expired_at" yaml:"expired_at,omitempty"`
 
 	R *userTokenR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userTokenL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var UserTokenColumns = struct {
-	ID     string
-	UserID string
-	Hash   string
+	ID        string
+	UserID    string
+	Hash      string
+	ExpiredAt string
 }{
-	ID:     "id",
-	UserID: "user_id",
-	Hash:   "hash",
+	ID:        "id",
+	UserID:    "user_id",
+	Hash:      "hash",
+	ExpiredAt: "expired_at",
 }
 
 var UserTokenTableColumns = struct {
-	ID     string
-	UserID string
-	Hash   string
+	ID        string
+	UserID    string
+	Hash      string
+	ExpiredAt string
 }{
-	ID:     "user_tokens.id",
-	UserID: "user_tokens.user_id",
-	Hash:   "user_tokens.hash",
+	ID:        "user_tokens.id",
+	UserID:    "user_tokens.user_id",
+	Hash:      "user_tokens.hash",
+	ExpiredAt: "user_tokens.expired_at",
 }
 
 // Generated where
 
 var UserTokenWhere = struct {
-	ID     whereHelperuint64
-	UserID whereHelpernull_Uint64
-	Hash   whereHelperstring
+	ID        whereHelperuint64
+	UserID    whereHelpernull_Uint64
+	Hash      whereHelperstring
+	ExpiredAt whereHelpernull_Time
 }{
-	ID:     whereHelperuint64{field: "`user_tokens`.`id`"},
-	UserID: whereHelpernull_Uint64{field: "`user_tokens`.`user_id`"},
-	Hash:   whereHelperstring{field: "`user_tokens`.`hash`"},
+	ID:        whereHelperuint64{field: "`user_tokens`.`id`"},
+	UserID:    whereHelpernull_Uint64{field: "`user_tokens`.`user_id`"},
+	Hash:      whereHelperstring{field: "`user_tokens`.`hash`"},
+	ExpiredAt: whereHelpernull_Time{field: "`user_tokens`.`expired_at`"},
 }
 
 // UserTokenRels is where relationship names are stored.
@@ -85,9 +92,9 @@ func (*userTokenR) NewStruct() *userTokenR {
 type userTokenL struct{}
 
 var (
-	userTokenAllColumns            = []string{"id", "user_id", "hash"}
+	userTokenAllColumns            = []string{"id", "user_id", "hash", "expired_at"}
 	userTokenColumnsWithoutDefault = []string{"user_id", "hash"}
-	userTokenColumnsWithDefault    = []string{"id"}
+	userTokenColumnsWithDefault    = []string{"id", "expired_at"}
 	userTokenPrimaryKeyColumns     = []string{"id"}
 )
 

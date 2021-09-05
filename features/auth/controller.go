@@ -2,12 +2,10 @@ package auth
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/nridwan/core/data/response"
 	"github.com/nridwan/core/middlewares/jwtuser"
 	"github.com/nridwan/models"
 	"github.com/nridwan/sys/dbutil"
-	"github.com/nridwan/sys/jwtutil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -46,15 +44,7 @@ func handlerLogin(ctx *fiber.Ctx) error {
 }
 
 func handlerRefresh(ctx *fiber.Ctx) error {
-	err := jwtuser.Logout(ctx)
-	if err != nil {
-		return err
-	}
-	claims := ctx.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
-	t, err := jwtuser.GenerateToken(
-		ctx.Context(),
-		jwtutil.GetUint64Claim(claims["sub"]),
-		jwtutil.GetUint64Claim(claims["api"]))
+	t, err := jwtuser.Refresh(ctx)
 	if err != nil {
 		return ctx.JSON(response.CreateMetaResponse(500, "", []response.Error{}))
 	}

@@ -15,6 +15,7 @@ CREATE TABLE `app_tokens` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `app_id` bigint(20) unsigned NULL,
   `hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expired_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `app_tokens_app_id_foreign` (`app_id`),
   CONSTRAINT `app_tokens_app_id_foreign` FOREIGN KEY (`app_id`) REFERENCES `api_apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

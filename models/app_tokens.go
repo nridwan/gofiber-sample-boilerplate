@@ -24,32 +24,37 @@ import (
 
 // AppToken is an object representing the database table.
 type AppToken struct {
-	ID    uint64      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	AppID null.Uint64 `boil:"app_id" json:"app_id,omitempty" toml:"app_id" yaml:"app_id,omitempty"`
-	Hash  string      `boil:"hash" json:"hash" toml:"hash" yaml:"hash"`
+	ID        uint64      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	AppID     null.Uint64 `boil:"app_id" json:"app_id,omitempty" toml:"app_id" yaml:"app_id,omitempty"`
+	Hash      string      `boil:"hash" json:"hash" toml:"hash" yaml:"hash"`
+	ExpiredAt null.Time   `boil:"expired_at" json:"expired_at,omitempty" toml:"expired_at" yaml:"expired_at,omitempty"`
 
 	R *appTokenR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L appTokenL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var AppTokenColumns = struct {
-	ID    string
-	AppID string
-	Hash  string
+	ID        string
+	AppID     string
+	Hash      string
+	ExpiredAt string
 }{
-	ID:    "id",
-	AppID: "app_id",
-	Hash:  "hash",
+	ID:        "id",
+	AppID:     "app_id",
+	Hash:      "hash",
+	ExpiredAt: "expired_at",
 }
 
 var AppTokenTableColumns = struct {
-	ID    string
-	AppID string
-	Hash  string
+	ID        string
+	AppID     string
+	Hash      string
+	ExpiredAt string
 }{
-	ID:    "app_tokens.id",
-	AppID: "app_tokens.app_id",
-	Hash:  "app_tokens.hash",
+	ID:        "app_tokens.id",
+	AppID:     "app_tokens.app_id",
+	Hash:      "app_tokens.hash",
+	ExpiredAt: "app_tokens.expired_at",
 }
 
 // Generated where
@@ -78,13 +83,15 @@ func (w whereHelpernull_Uint64) GTE(x null.Uint64) qm.QueryMod {
 }
 
 var AppTokenWhere = struct {
-	ID    whereHelperuint64
-	AppID whereHelpernull_Uint64
-	Hash  whereHelperstring
+	ID        whereHelperuint64
+	AppID     whereHelpernull_Uint64
+	Hash      whereHelperstring
+	ExpiredAt whereHelpernull_Time
 }{
-	ID:    whereHelperuint64{field: "`app_tokens`.`id`"},
-	AppID: whereHelpernull_Uint64{field: "`app_tokens`.`app_id`"},
-	Hash:  whereHelperstring{field: "`app_tokens`.`hash`"},
+	ID:        whereHelperuint64{field: "`app_tokens`.`id`"},
+	AppID:     whereHelpernull_Uint64{field: "`app_tokens`.`app_id`"},
+	Hash:      whereHelperstring{field: "`app_tokens`.`hash`"},
+	ExpiredAt: whereHelpernull_Time{field: "`app_tokens`.`expired_at`"},
 }
 
 // AppTokenRels is where relationship names are stored.
@@ -108,9 +115,9 @@ func (*appTokenR) NewStruct() *appTokenR {
 type appTokenL struct{}
 
 var (
-	appTokenAllColumns            = []string{"id", "app_id", "hash"}
+	appTokenAllColumns            = []string{"id", "app_id", "hash", "expired_at"}
 	appTokenColumnsWithoutDefault = []string{"app_id", "hash"}
-	appTokenColumnsWithDefault    = []string{"id"}
+	appTokenColumnsWithDefault    = []string{"id", "expired_at"}
 	appTokenPrimaryKeyColumns     = []string{"id"}
 )
 
