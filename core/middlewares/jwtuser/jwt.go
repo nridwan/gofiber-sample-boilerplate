@@ -104,11 +104,11 @@ func Refresh(ctx *fiber.Ctx) (*jwtmodel.TokenResponse, error) {
 		return nil, err
 	}
 	// Generate encoded token and send it as response.
-	accessToken, err := generateAccessTokenHashed(ctx.Context(), claims["sub"].(string), jwtutil.GetUint64Claim(claims["api"]), id, now)
+	accessToken, err := generateAccessTokenHashed(ctx.Context(), claims["sub"].(string), id, now)
 	if err != nil {
 		return nil, err
 	}
-	refreshToken, err := generateRefreshTokenHashed(ctx.Context(), claims["sub"].(string), jwtutil.GetUint64Claim(claims["api"]), id, now)
+	refreshToken, err := generateRefreshTokenHashed(ctx.Context(), claims["sub"].(string), id, now)
 	if err != nil {
 		return nil, err
 	}
@@ -122,18 +122,18 @@ func Refresh(ctx *fiber.Ctx) (*jwtmodel.TokenResponse, error) {
 
 }
 
-func GenerateToken(ctx context.Context, sub uint64, api uint64) (*jwtmodel.TokenResponse, error) {
+func GenerateToken(ctx context.Context, sub uint64) (*jwtmodel.TokenResponse, error) {
 	now := time.Now().Unix()
 	id, err := gonanoid.New()
 	if err != nil {
 		return nil, err
 	}
 	// Generate encoded token and send it as response.
-	accessToken, err := generateAccessToken(ctx, sub, api, id, now)
+	accessToken, err := generateAccessToken(ctx, sub, id, now)
 	if err != nil {
 		return nil, err
 	}
-	refreshToken, err := generateRefreshToken(ctx, sub, api, id, now)
+	refreshToken, err := generateRefreshToken(ctx, sub, id, now)
 	if err != nil {
 		return nil, err
 	}
@@ -152,20 +152,19 @@ func GenerateToken(ctx context.Context, sub uint64, api uint64) (*jwtmodel.Token
 	}, nil
 }
 
-func generateAccessToken(ctx context.Context, sub uint64, api uint64, jti string, now int64) (string, error) {
+func generateAccessToken(ctx context.Context, sub uint64, jti string, now int64) (string, error) {
 	if res, err := hashutil.EncodeSingle(int64(sub)); err != nil {
 		return "", err
 	} else {
-		return generateAccessTokenHashed(ctx, res, api, jti, now)
+		return generateAccessTokenHashed(ctx, res, jti, now)
 	}
 }
 
-func generateAccessTokenHashed(ctx context.Context, sub string, api uint64, jti string, now int64) (string, error) {
+func generateAccessTokenHashed(ctx context.Context, sub string, jti string, now int64) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["sub"] = sub
-	claims["api"] = api
 	claims["jti"] = jti
 	claims["iat"] = now
 	claims["nbf"] = now
@@ -175,21 +174,20 @@ func generateAccessTokenHashed(ctx context.Context, sub string, api uint64, jti 
 	return token.SignedString([]byte(jwtutil.GetSecret()))
 }
 
-func generateRefreshToken(ctx context.Context, sub uint64, api uint64, jti string, now int64) (string, error) {
+func generateRefreshToken(ctx context.Context, sub uint64, jti string, now int64) (string, error) {
 	if res, err := hashutil.EncodeSingle(int64(sub)); err != nil {
 		return "", err
 	} else {
-		return generateRefreshTokenHashed(ctx, res, api, jti, now)
+		return generateRefreshTokenHashed(ctx, res, jti, now)
 	}
 }
 
-func generateRefreshTokenHashed(ctx context.Context, sub string, api uint64, jti string, now int64) (string, error) {
+func generateRefreshTokenHashed(ctx context.Context, sub string, jti string, now int64) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	currentTime := time.Now()
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["sub"] = sub
-	claims["api"] = api
 	claims["jti"] = jti
 	claims["iat"] = currentTime.Unix()
 	claims["nbf"] = currentTime.Unix()

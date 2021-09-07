@@ -35,7 +35,7 @@ func handlerLogin(ctx *fiber.Ctx) error {
 		}}))
 	}
 
-	t, err := jwtuser.GenerateToken(ctx.Context(), data.ID, 1)
+	t, err := jwtuser.GenerateToken(ctx.Context(), data.ID)
 	if err != nil {
 		return ctx.JSON(response.CreateMetaResponse(500, "", []response.Error{}))
 	}
