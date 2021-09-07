@@ -1,4 +1,0 @@
-BEGIN;
-DROP TABLE IF EXISTS `app_tokens`;
-DROP TABLE IF EXISTS `api_apps`;
-COMMIT;
