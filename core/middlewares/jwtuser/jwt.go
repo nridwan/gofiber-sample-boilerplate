@@ -18,7 +18,7 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-const identifier = "jwtauth/app"
+const identifier = "jwtauth/user"
 
 var sha = sha1.New()
 var prv = base64.StdEncoding.EncodeToString(sha.Sum([]byte(identifier)))
