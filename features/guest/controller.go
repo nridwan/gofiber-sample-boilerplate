@@ -1,41 +1,40 @@
-package auth
+package guest
 
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nridwan/core/data/response"
-	"github.com/nridwan/core/middlewares/jwtuser"
+	"github.com/nridwan/core/middlewares/jwtapp"
 	"github.com/nridwan/models"
 	"github.com/nridwan/sys/dbutil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func handlerLogin(ctx *fiber.Ctx) error {
-	request := paramLogin{}
+	request := paramApps{}
 	ctx.BodyParser(&request)
-	if len(request.Username.String) == 0 {
+	if len(request.Alias.String) == 0 {
 		return ctx.JSON(response.CreateMetaResponse(500, "failed", []response.Error{{
-			Code:   "username",
-			Reason: "Username must not be empty",
+			Code:   "alias",
+			Reason: "Alias must not be empty",
 		}}))
 	}
-	if len(request.Password.String) == 0 {
+	if len(request.Appkey.String) == 0 {
 		return ctx.JSON(response.CreateMetaResponse(500, "failed", []response.Error{{
-			Code:   "password",
-			Reason: "Password must not be empty",
+			Code:   "appkey",
+			Reason: "Appkey must not be empty",
 		}}))
 	}
-	data, err := models.Users(qm.Where("username=?", request.Username.String)).One(ctx.Context(), dbutil.Default())
-	success := err == nil
-	success = success && bcrypt.CompareHashAndPassword([]byte(data.Password), []byte(request.Password.String)) == nil
-	if !success {
+	data, err := models.APIApps(
+		qm.Where("alias=?", request.Alias.String),
+		qm.And("appkey=?", request.Appkey.String)).One(ctx.Context(), dbutil.Default())
+	if err != nil {
 		return ctx.JSON(response.CreateMetaResponse(500, "Wrong Username / Password", []response.Error{{
 			Code:   "not_found",
-			Reason: "Wrong Username / Password",
+			Reason: "Wrong Alias / Appkey",
 		}}))
 	}
 
-	t, err := jwtuser.GenerateToken(ctx.Context(), data.ID, ctx.Locals("appId").(uint64))
+	t, err := jwtapp.GenerateToken(ctx.Context(), data.ID)
 	if err != nil {
 		return ctx.JSON(response.CreateMetaResponse(500, "", []response.Error{}))
 	}
@@ -44,7 +43,7 @@ func handlerLogin(ctx *fiber.Ctx) error {
 }
 
 func handlerRefresh(ctx *fiber.Ctx) error {
-	t, err := jwtuser.Refresh(ctx)
+	t, err := jwtapp.Refresh(ctx)
 	if err != nil {
 		return ctx.JSON(response.CreateMetaResponse(500, "", []response.Error{}))
 	}
@@ -53,7 +52,7 @@ func handlerRefresh(ctx *fiber.Ctx) error {
 }
 
 func handlerLogout(ctx *fiber.Ctx) error {
-	err := jwtuser.Logout(ctx)
+	err := jwtapp.Logout(ctx)
 	if err != nil {
 		return err
 	}
