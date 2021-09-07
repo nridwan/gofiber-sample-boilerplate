@@ -10,6 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	gonanoid "github.com/matoous/go-nanoid/v2"
 	"github.com/nridwan/core/data/jwtmodel"
+	"github.com/nridwan/core/middlewares/jwtuser"
 	"github.com/nridwan/models"
 	"github.com/nridwan/sys/hashutil"
 	"github.com/nridwan/sys/jwtutil"
@@ -53,6 +54,13 @@ func CanAccess(c *fiber.Ctx) error {
 		return c.Next()
 	}
 	return fiber.NewError(401, "Missing or malformed JWT")
+}
+
+func MaybeAccess(c *fiber.Ctx) error {
+	if jwtuser.CheckUser(c, false) {
+		return c.Next()
+	}
+	return CanAccess(c)
 }
 
 func CanRefresh(c *fiber.Ctx) error {

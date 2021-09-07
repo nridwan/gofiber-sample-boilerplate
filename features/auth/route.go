@@ -14,5 +14,5 @@ func Register(app *fiber.App) {
 	app.Post(prefix+"/login", jwtutil.GetHandler(), jwtapp.CanAccess, handlerLogin)
 	app.Post(prefix+"/refresh", jwtutil.GetHandler(), jwtuser.CanRefresh, handlerRefresh)
 	app.Post(prefix+"/logout", jwtutil.GetHandler(), jwtuser.CanAccess, handlerLogout)
-	app.Get(prefix+"/profile", jwtutil.GetHandler(), jwtuser.CanAccess, handlerProfile)
+	app.Get(prefix+"/profile", jwtutil.GetHandler(), jwtapp.MaybeAccess, handlerProfile)
 }

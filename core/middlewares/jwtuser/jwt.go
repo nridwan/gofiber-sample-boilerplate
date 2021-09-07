@@ -24,7 +24,7 @@ var sha = sha1.New()
 var prv = base64.StdEncoding.EncodeToString(sha.Sum([]byte(identifier)))
 var prvRefresh = base64.StdEncoding.EncodeToString(sha.Sum([]byte(identifier + "/refresh")))
 
-func checkUser(c *fiber.Ctx, refresh bool) bool {
+func CheckUser(c *fiber.Ctx, refresh bool) bool {
 	claims := c.Locals("user").(*jwt.Token).Claims.(jwt.MapClaims)
 
 	if (refresh && claims["prv"] != prvRefresh) || (!refresh && claims["prv"] != prv) {
@@ -55,14 +55,19 @@ func checkUser(c *fiber.Ctx, refresh bool) bool {
 }
 
 func CanAccess(c *fiber.Ctx) error {
-	if checkUser(c, false) {
+	if CheckUser(c, false) {
 		return c.Next()
 	}
 	return fiber.NewError(401, "Missing or malformed JWT")
 }
 
+func MaybeAccess(c *fiber.Ctx) error {
+	CheckUser(c, false)
+	return c.Next()
+}
+
 func CanRefresh(c *fiber.Ctx) error {
-	if checkUser(c, true) {
+	if CheckUser(c, true) {
 		return c.Next()
 	}
 	return fiber.NewError(401, "Missing or malformed JWT")
