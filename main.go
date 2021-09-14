@@ -44,5 +44,5 @@ func main() {
 	app.Use(hs.CheckHost)
 	features.Register(app)
 
-	log.Fatal(app.Listen(host))
+	log.Fatal(app.Listen(configutil.Getenv("APP_DOMAIN", "localhost:8000")))
 }
