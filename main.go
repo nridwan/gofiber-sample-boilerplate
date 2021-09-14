@@ -35,8 +35,8 @@ func main() {
 	config.LoadAllConfiguration()
 	// Make a new HostSwitch and insert the router (our http handler)
 	// for example.com and port 12345
-	host := configutil.Getenv("APP_HOST", "localhost:8000")
-	hs := HostSwitch{host}
+	domain := configutil.Getenv("APP_DOMAIN", "localhost:8000")
+	hs := HostSwitch{domain}
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: fiberutil.AssertError,
@@ -44,5 +44,5 @@ func main() {
 	app.Use(hs.CheckHost)
 	features.Register(app)
 
-	log.Fatal(app.Listen(configutil.Getenv("APP_DOMAIN", "localhost:8000")))
+	log.Fatal(app.Listen(configutil.Getenv("APP_HOST", "localhost:8000")))
 }
