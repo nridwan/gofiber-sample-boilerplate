@@ -19,4 +19,7 @@ CREATE TABLE `user_tokens` (
   KEY `user_tokens_user_id_foreign` (`user_id`),
   CONSTRAINT `user_tokens_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- PLEASE REMOVE ON PRODUCTION, hash value is "password"
+INSERT INTO `users` values (DEFAULT, 'username', '$2a$12$C.rSdRpXicGcNknv37GQ9e49YXc3w4gJSb.48cyfjCkWYT4wOrd3O', 'User Name', DEFAULT, DEFAULT);
 COMMIT;
