@@ -1,4 +1,4 @@
-# Script for building all build types in a finger snap
+# Script for building all build types in a finger snaps
 # args
 if (($args[0] -ne $null) -AND ($args[1] -ne $null)) {
 	$Env:GOOS="$($args[0])"
