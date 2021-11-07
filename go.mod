@@ -1,5 +1,6 @@
 module github.com/nridwan
 
+// +heroku goVersion go1.17.1
 go 1.17
 
 require (
