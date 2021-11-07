@@ -29,7 +29,7 @@ func (hs HostSwitch) CheckHost(ctx *fiber.Ctx) error {
 }
 
 func main() {
-	if configutil.Getenv("APP_HOST", "") == "" {
+	if configutil.Getenv("PORT", "") == "" {
 		err := godotenv.Load()
 		if err != nil {
 			log.Fatal("Error loading .env file")
