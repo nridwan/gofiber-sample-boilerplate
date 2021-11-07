@@ -62,5 +62,5 @@ func handlerLogout(ctx *fiber.Ctx) error {
 
 func handlerProfile(ctx *fiber.Ctx) error {
 	user := ctx.Locals("userData")
-	return ctx.JSON(response.CreateResponse(200, "success", user))
+	return ctx.JSON(response.CreateResponse(200, "success", getUserDto(user.(*models.User))))
 }

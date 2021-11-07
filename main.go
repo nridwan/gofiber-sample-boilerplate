@@ -6,6 +6,7 @@ import (
 	"github.com/nridwan/config"
 	"github.com/nridwan/config/configutil"
 	"github.com/nridwan/features"
+	"github.com/nridwan/sys/dbutil"
 	"github.com/nridwan/sys/fiberutil"
 
 	"github.com/gofiber/fiber/v2"
@@ -33,6 +34,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 	config.LoadAllConfiguration()
+	dbutil.Migrate("default")
 	// Make a new HostSwitch and insert the router (our http handler)
 	// for example.com and port 12345
 	domain := configutil.Getenv("APP_DOMAIN", "localhost:8000")

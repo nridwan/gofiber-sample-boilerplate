@@ -8,7 +8,7 @@ import (
 	"github.com/nridwan/sys/dbutil"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/mysql"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
 )
@@ -25,10 +25,10 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 	config.LoadAllConfiguration()
-	driver, _ := mysql.WithInstance(dbutil.Default(), &mysql.Config{})
+	driver, _ := postgres.WithInstance(dbutil.Default(), &postgres.Config{})
 	m, err := migrate.NewWithDatabaseInstance(
 		"file://"+*path,
-		"mysql", driver)
+		"postgres", driver)
 	if err != nil {
 		println(err.Error())
 		return

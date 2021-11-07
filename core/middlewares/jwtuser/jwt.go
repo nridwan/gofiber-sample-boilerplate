@@ -122,7 +122,7 @@ func Refresh(ctx *fiber.Ctx) (*jwtmodel.TokenResponse, error) {
 
 }
 
-func GenerateToken(ctx context.Context, sub uint64) (*jwtmodel.TokenResponse, error) {
+func GenerateToken(ctx context.Context, sub int64) (*jwtmodel.TokenResponse, error) {
 	now := time.Now().Unix()
 	id, err := gonanoid.New()
 	if err != nil {
@@ -138,7 +138,7 @@ func GenerateToken(ctx context.Context, sub uint64) (*jwtmodel.TokenResponse, er
 		return nil, err
 	}
 	var saved = models.UserToken{
-		UserID:    null.Uint64From(sub),
+		UserID:    null.Int64From(sub),
 		Hash:      id,
 		ExpiredAt: null.TimeFrom(time.Unix(now, 0).Add(time.Minute * jwtutil.RefreshLifetime)),
 	}
@@ -152,7 +152,7 @@ func GenerateToken(ctx context.Context, sub uint64) (*jwtmodel.TokenResponse, er
 	}, nil
 }
 
-func generateAccessToken(ctx context.Context, sub uint64, jti string, now int64) (string, error) {
+func generateAccessToken(ctx context.Context, sub int64, jti string, now int64) (string, error) {
 	if res, err := hashutil.EncodeSingle(int64(sub)); err != nil {
 		return "", err
 	} else {
@@ -174,7 +174,7 @@ func generateAccessTokenHashed(ctx context.Context, sub string, jti string, now 
 	return token.SignedString([]byte(jwtutil.GetSecret()))
 }
 
-func generateRefreshToken(ctx context.Context, sub uint64, jti string, now int64) (string, error) {
+func generateRefreshToken(ctx context.Context, sub int64, jti string, now int64) (string, error) {
 	if res, err := hashutil.EncodeSingle(int64(sub)); err != nil {
 		return "", err
 	} else {
