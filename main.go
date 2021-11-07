@@ -48,5 +48,5 @@ func main() {
 	app.Use(hs.CheckHost)
 	features.Register(app)
 
-	log.Fatal(app.Listen(configutil.Getenv("APP_HOST", "localhost:8000")))
+	log.Fatal(app.Listen(configutil.Getenv("APP_HOST", "") + ":" + configutil.Getenv("PORT", "8000")))
 }
