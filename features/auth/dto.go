@@ -6,9 +6,11 @@ import (
 )
 
 type UserDto struct {
-	ID       int64       `json:"id"`
-	Username string      `json:"username"`
-	Name     null.String `json:"name,omitempty"`
+	ID        int64       `json:"id"`
+	Username  string      `json:"username"`
+	Name      null.String `json:"name,omitempty"`
+	CreatedAt null.Time   `json:"created_at,omitempty"`
+	UpdatedAt null.Time   `json:"updated_at,omitempty"`
 }
 
 func getUserDto(user *models.User) UserDto {
@@ -16,5 +18,7 @@ func getUserDto(user *models.User) UserDto {
 		user.ID,
 		user.Username,
 		user.Name,
+		user.CreatedAt,
+		user.UpdatedAt,
 	}
 }
