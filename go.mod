@@ -10,6 +10,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.0.0
 	github.com/golang-migrate/migrate/v4 v4.14.1
 	github.com/joho/godotenv v1.3.0
+	github.com/lib/pq v1.8.0
 	github.com/matoous/go-nanoid/v2 v2.0.0
 	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/valyala/fasthttp v1.29.0
@@ -27,7 +28,6 @@ require (
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/klauspost/compress v1.13.4 // indirect
-	github.com/lib/pq v1.8.0 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

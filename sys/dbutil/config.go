@@ -24,6 +24,7 @@ type DbProfile struct {
 	Username   string
 	Password   string
 	Locale     string
+	DbUrl      string
 }
 
 var profiles = map[string]*sql.DB{}
@@ -61,9 +62,15 @@ func AddConfig(profName string, config DbProfile) {
 		suffix += "&parseTime=true&multiStatements=true"
 		profiles[profName], _ = sql.Open(config.Connection, config.Username+":"+config.Password+"@tcp("+config.Host+":"+config.Port+")/"+config.Database+suffix)
 	} else if config.Connection == "postgres" {
-		profiles[profName], _ = sql.Open(config.Connection, fmt.Sprintf("host='%s' port=%s user='%s' "+
-			"password='%s' dbname='%s' sslmode=disable",
-			config.Host, config.Port, config.Username, config.Password, config.Database))
+		var connInfo string
+		if config.DbUrl != "" {
+			connInfo = config.DbUrl
+		} else {
+			connInfo = fmt.Sprintf("host='%s' port=%s user='%s' "+
+				"password='%s' dbname='%s' sslmode=disable",
+				config.Host, config.Port, config.Username, config.Password, config.Database)
+		}
+		profiles[profName], _ = sql.Open(config.Connection, connInfo)
 		err := profiles[profName].Ping()
 		if err != nil {
 			panic(err)

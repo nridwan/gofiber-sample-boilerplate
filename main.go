@@ -29,9 +29,11 @@ func (hs HostSwitch) CheckHost(ctx *fiber.Ctx) error {
 }
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	if configutil.Getenv("APP_HOST", "") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
 	}
 	config.LoadAllConfiguration()
 	dbutil.Migrate("default")

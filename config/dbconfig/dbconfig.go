@@ -15,6 +15,7 @@ func LoadConfiguration() {
 		Database:   configutil.Getenv("DB_DATABASE", ""),
 		Username:   configutil.Getenv("DB_USERNAME", ""),
 		Password:   configutil.Getenv("DB_PASSWORD", ""),
-		Locale:     configutil.Getenv("DB_LOCALE", "")})
+		Locale:     configutil.Getenv("DB_LOCALE", ""),
+		DbUrl:      configutil.Getenv("DATABASE_URL", "")})
 	boil.SetDB(dbutil.Default())
 }
