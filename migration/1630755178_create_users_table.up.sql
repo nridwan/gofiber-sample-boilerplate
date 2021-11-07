@@ -8,8 +8,8 @@ CREATE TABLE users (
   username varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
   name varchar(255) DEFAULT NULL,
-  created_at timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at timestamptz(0) NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamptz(0) NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   CONSTRAINT users_username_unique UNIQUE  (username)
 )  ;
