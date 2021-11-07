@@ -94,6 +94,11 @@ func Get(profName string) *sql.DB {
 	return profiles[profName]
 }
 
+//GetConnection : get DB profile Connection
+func GetConnection(profName string) string {
+	return connections[profName]
+}
+
 func Migrate(profName string) {
 	var driver database.Driver
 	var err error
